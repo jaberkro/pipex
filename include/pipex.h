@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:15:22 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/04/14 22:01:39 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/04/15 20:32:33 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,6 @@ typedef struct s_data{
 }   t_data;
 
 t_data	init_data(int argc, char **argv);
-t_data	check_input(int argc, char **argv);
+t_data	get_input_output_fd(int argc, char **argv);
 
 #endif

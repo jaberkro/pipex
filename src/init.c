@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:10:18 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/04/14 14:17:51 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/04/15 20:32:25 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,6 @@ t_data	init_data(int argc, char **argv)
 {
 	t_data	data;
 
-	data = check_input(argc, argv);
+	data = get_input_output_fd(argc, argv);
 	return (data);
 }
