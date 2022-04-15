@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:00:43 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/04/15 20:31:59 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/04/15 20:46:56 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,5 @@ t_data	get_input_output_fd(int argc, char **argv)
 // 	}
 // }
 
-//zlibrary
+
 
