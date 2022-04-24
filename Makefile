@@ -6,12 +6,12 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/04/14 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/04/14 14:16:59 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/04/24 22:36:44 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror #-fsanitize=address #remove this
 INC = -I ./libft -I ./include
 
 LIBFT_DIR = libft/
@@ -20,7 +20,7 @@ LIBFT = libft/libft.a
 SRC_DIR = src
 BUILD_DIR = obj
 
-SRC = src/main.c src/init.c src/error_check.c
+SRC = src/test.c src/error_check.c #src/main.c src/init.c
 
 OBJ = $(subst $(SRC_DIR), $(BUILD_DIR), $(SRC:.c=.o))
 
