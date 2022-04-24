@@ -6,12 +6,12 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/04/14 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/04/24 22:36:44 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/04/24 22:39:55 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
-FLAGS = -Wall -Wextra -Werror #-fsanitize=address #remove this
+FLAGS = -Wall -Wextra -Werror
 INC = -I ./libft -I ./include
 
 LIBFT_DIR = libft/
