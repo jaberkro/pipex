@@ -6,78 +6,100 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:14:55 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/04/21 13:49:09 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/04/30 18:30:58 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void    do_magic(t_data *data, int i)
+void	error_exit(char *message, int exit_code)
 {
-    int len;
-    char buf[301];
-
-    if (data->id == 0)
-    {
-        ft_printf("I'm a child with id = %d. ", data->id);
-        //ft_printf("fd[0]: %d, fd[1]: %d\n", data->fd_pipe[0], data->fd_pipe[1]);
-        close(data->fd_pipe[0]);
-        write(data->fd_pipe[1], data->argv[data->argc - i - 1], ft_strlen(data->argv[data->argc - i - 1]));
-        close(data->fd_pipe[1]);
-        ft_printf("executing command: %s\n", data->argv[data->argc - i - 1]);
-    }
-    else if (data->done == 0)
-    {
-        //waitpid(data->id, NULL, WUNTRACED);
-        ft_printf("I'm a parent with id = %d. ", data->id);
-        close(data->fd_pipe[1]);
-        len = read(data->fd_pipe[0], buf, 300);
-        if (len == -1)
-        {
-            ft_printf("Error: read failed\n");
-            exit(EXIT_FAILURE);
-        }
-        buf[len] = '\0';
-        ft_printf("I just read: [%s]\n", buf);
-        close(data->fd_pipe[0]);
-        data->done = 1;
-    }
+	perror(message);
+	exit(exit_code);
 }
 
-void    create_processes(int i, t_data *data)
+void	write_exit(char *message, int exit_code)
 {
-    data->id = 0;
-    while (i > 0)
-    {
-        if (data->id == 0)
-        {
-            if (pipe(data->fd_pipe) == -1)
-			{
-				ft_printf("Error: creating pipe failed\n");
-				exit(EXIT_FAILURE);
-			}
-			data->id = fork();
-            if (data->id == -1)
-            {
-                ft_printf("Error: fork failed\n");
-                exit(EXIT_FAILURE);
-            }
-        }
-        do_magic(data, i);
-        i--;
-    }
-    
+	write(2, message, ft_strlen(message));
+	exit(exit_code);
 }
 
-int	main(int argc, char **argv)//, char **env)
+void	fork_and_execute_first(t_data data, char **commands)
 {
-	t_data  data;
-    int     i;
+	int		pid;
+	char	*path;
 
-    i = 0;
-	if (argc != 5)
+	pid = fork();
+	if (pid < 0)
 		exit(EXIT_FAILURE);
-	data = init_data(argc, argv);
-    create_processes(2, &data);
+	if (pid == 0)
+	{
+		path = command_in_paths(commands[0], data.paths);
+		if (path == NULL)
+			error_exit(commands[0], 127);
+		if (dup2(data.fd_in, STDIN_FILENO) < 0)
+			error_exit("dup2", 1);
+		if (dup2(data.fd_pipe[1], STDOUT_FILENO) < 0)
+			error_exit("dup2", 1);
+		close(data.fd_pipe[0]);
+		close(data.fd_pipe[1]);
+		close(data.fd_in);
+		close(data.fd_out);
+		if (execve(path, commands, data.env) < 0)
+			error_exit("execve", 1);
+		waitpid(pid, NULL, 0);
+	}
+}
+
+void	fork_and_execute_last(t_data data, char **commands)
+{
+	int		pid;
+	char	*path;
+
+	pid = fork();
+	if (pid < 0)
+		exit(EXIT_FAILURE);
+	if (pid == 0)
+	{
+		path = command_in_paths(commands[0], data.paths);
+		if (path == NULL)
+			error_exit(commands[0], 127);
+		if (dup2(data.fd_pipe[0], STDIN_FILENO) < 0)
+			error_exit("dup2", 1);
+		if (dup2(data.fd_out, STDOUT_FILENO) < 0)
+			error_exit("dup2", 1);
+		close(data.fd_pipe[0]);
+		close(data.fd_pipe[1]);
+		close(data.fd_in);
+		close(data.fd_out);
+		if (execve(path, commands, data.env) < 0)
+			error_exit("execve", 1);
+		waitpid(pid, NULL, 0);
+	}
+}
+
+int	main(int argc, char **argv, char **env)
+{
+	t_data	data;
+	char	**commands;
+	int		i;
+
+	if (argc < 5)
+		write_exit("Error: Too little arguments\n", 1);
+	else if (argc > 5)
+		write_exit("Error: Too much arguments\n", 1);
+	data = init_data(argc, argv, env);
+	i = 2;
+	while (i < argc - 1)
+	{
+		commands = ft_split(data.argv[i], ' ');
+		if (commands == NULL)
+			error_exit("malloc", 1);
+		if (i == 2)
+			fork_and_execute_first(data, commands);
+		else
+			fork_and_execute_last(data, commands);
+		i++;
+	}
 	return (1);
 }
