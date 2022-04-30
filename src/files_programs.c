@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:00:43 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/04/30 18:38:44 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/04/30 18:41:04 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	**get_paths(char **env)
 	return (paths);
 }
 
-char	*make_path(char *path)
+static char	*make_path(char *path)
 {
 	char	*command;
 	char	*tmp;
