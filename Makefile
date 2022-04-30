@@ -6,7 +6,7 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/04/14 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/04/24 22:39:55 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/04/30 18:33:42 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ LIBFT = libft/libft.a
 SRC_DIR = src
 BUILD_DIR = obj
 
-SRC = src/test.c src/error_check.c #src/main.c src/init.c
+SRC = src/main.c src/init.c src/files_programs.c
 
 OBJ = $(subst $(SRC_DIR), $(BUILD_DIR), $(SRC:.c=.o))
 
