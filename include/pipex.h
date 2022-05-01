@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:15:22 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/04/30 21:25:53 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/01 14:09:39 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 typedef struct s_data{
 	int		fd_in;
-	int		fd_pipe[2];
+	int		**fd_pipes;
 	int		fd_out;
 	int		argc;
 	char	**argv;
