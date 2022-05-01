@@ -6,7 +6,7 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/04/14 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/04/30 22:43:13 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/05/01 12:11:05 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,14 @@ BUILD_DIR = obj
 
 SRC = src/main.c src/init.c src/files_programs.c src/clean.c
 
+SRC_BONUS = src/main_bonus.c src/init_bonus.c src/files_programs_bonus.c \
+	src/clean_bonus.c
+
+ifdef WITH_BONUS
+OBJ = $(subst $(SRC_DIR), $(BUILD_DIR), $(SRC_BONUS:.c=.o))
+else
 OBJ = $(subst $(SRC_DIR), $(BUILD_DIR), $(SRC:.c=.o))
+endif
 
 # COLORS
 PINK	= \x1b[35m
@@ -47,6 +54,9 @@ $(NAME): $(LIBFT) $(OBJ)
 
 $(LIBFT):
 	$(MAKE) bonus -C $(LIBFT_DIR)
+
+bonus: fclean 
+	$(MAKE) WITH_BONUS=1 all
 
 clean:
 	rm -rf $(BUILD_DIR)
