@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:14:55 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/04/30 22:42:08 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/01 14:22:12 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	wait_for_pids(pid_t *pids)
 	}
 }
 
-pid_t	fork_and_execute(t_data data, char **commands, int d2_in, int d2_out)
+pid_t	fork_execute(t_data data, char **command, int d2_in, int d2_out)
 {
 	pid_t	pid;
 	char	*path;
@@ -34,9 +34,9 @@ pid_t	fork_and_execute(t_data data, char **commands, int d2_in, int d2_out)
 		error_exit("Fork failed", 1);
 	if (pid == 0)
 	{
-		path = command_in_paths(commands[0], data.paths);
+		path = command_in_paths(command[0], data.paths);
 		if (path == NULL)
-			error_exit(commands[0], 127);
+			error_exit(command[0], 127);
 		if (dup2(d2_in, STDIN_FILENO) < 0)
 			error_exit("Dup2 failed", 1);
 		if (dup2(d2_out, STDOUT_FILENO) < 0)
@@ -44,7 +44,7 @@ pid_t	fork_and_execute(t_data data, char **commands, int d2_in, int d2_out)
 		close(d2_in);
 		close(d2_out);
 		close_fds(data);
-		if (execve(path, commands, data.env) < 0)
+		if (execve(path, command, data.env) < 0)
 			error_exit("Execve failed", 1);
 	}
 	return (pid);
@@ -52,20 +52,20 @@ pid_t	fork_and_execute(t_data data, char **commands, int d2_in, int d2_out)
 
 pid_t	execute_command(t_data data, int i)
 {
-	char	**commands;
+	char	**command;
 	pid_t	pid;
 
-	commands = ft_split(data.argv[i], ' ');
-	if (commands == NULL)
+	command = ft_split(data.argv[i], ' ');
+	if (command == NULL)
 		error_exit("Malloc failed", 1);
 	if (i == 2)
-		pid = fork_and_execute(data, commands, data.fd_in, data.fd_pipe[1]);
+		pid = fork_execute(data, command, data.fd_in, data.fd_pipes[0][1]);
 	else
 	{
 		data.fd_out = open_outputfile(data.argv[data.argc - 1]);
-		pid = fork_and_execute(data, commands, data.fd_pipe[0], data.fd_out);
+		pid = fork_execute(data, command, data.fd_pipes[0][0], data.fd_out);
 	}
-	free_nested_array(commands);
+	free_nested_array(command);
 	return (pid);
 }
 

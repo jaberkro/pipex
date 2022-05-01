@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/21 12:18:48 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/04/30 22:42:01 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/01 14:09:23 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,12 @@ void	wait_for_pids(pid_t *pids)
 	i = 0;
 	while (pids && pids[i])
 	{
-		ft_printf("going to wait for pid %d\n", pids[i]);
 		waitpid(pids[i], NULL, 0);
-		ft_printf("hoi\n");
 		i++;
 	}
 }
 
-pid_t	fork_and_execute(t_data data, char **commands, int d2_in, int d2_out)
+pid_t	fork_execute(t_data data, char **commands, int d2_in, int d2_out)
 {
 	pid_t	pid;
 	char	*path;
@@ -54,22 +52,26 @@ pid_t	fork_and_execute(t_data data, char **commands, int d2_in, int d2_out)
 
 pid_t	execute_command(t_data data, int i)
 {
-	char	**commands;
+	char	**command;
 	pid_t	pid;
 
-	commands = ft_split(data.argv[i], ' ');
-	if (commands == NULL)
+	command = ft_split(data.argv[i], ' ');
+	if (command == NULL)
 		error_exit("Malloc failed", 1);
 	if (i == 2)
-		pid = fork_and_execute(data, commands, data.fd_in, data.fd_pipe[1]);
+		pid = fork_execute(data, command, data.fd_in, data.fd_pipes[i - 2][1]);
 	else if (i == data.argc - 2)
 	{
 		data.fd_out = open_outputfile(data.argv[data.argc - 1]);
-		pid = fork_and_execute(data, commands, data.fd_pipe[0], data.fd_out);
+		pid = fork_execute(data, command, data.fd_pipes[i - 3][0],
+				data.fd_out);
 	}
 	else
-		pid = fork_and_execute(data, commands, data.fd_pipe[0], data.fd_pipe[1]);
-	free_nested_array(commands);
+	{
+		pid = fork_execute(data, command, data.fd_pipes[i - 3][0],
+				data.fd_pipes[i - 2][1]);
+	}
+	free_nested_array(command);
 	return (pid);
 }
 
