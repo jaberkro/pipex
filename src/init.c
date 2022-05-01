@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:10:18 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/01 13:58:28 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/01 21:08:12 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ t_data	init_data(int argc, char **argv, char **env)
 	t_data	data;
 
 	data.fd_in = open_inputfile(argv[1]);
+	data.heredoc = 0;
 	data.argc = argc;
 	data.argv = argv;
 	data.fd_pipes = create_pipes(argc - 4);
