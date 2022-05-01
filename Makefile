@@ -6,7 +6,7 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/04/14 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/05/01 12:11:05 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/05/01 12:53:10 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,7 +55,8 @@ $(NAME): $(LIBFT) $(OBJ)
 $(LIBFT):
 	$(MAKE) bonus -C $(LIBFT_DIR)
 
-bonus: fclean 
+bonus:
+	rm -f $(NAME)
 	$(MAKE) WITH_BONUS=1 all
 
 clean:
