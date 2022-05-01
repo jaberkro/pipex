@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   files_programs_bonus.c.c                           :+:    :+:            */
+/*   files_programs_bonus.c                             :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/20 21:03:09 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/04/30 19:01:47 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/01 14:27:37 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,26 +38,23 @@ char	**get_paths(char **env)
 {
 	int		i;
 	char	**paths;
+	char	**first_paths;
 	char	*tmp;
 
 	i = 0;
 	paths = NULL;
-	while (env[i])
-	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
-		{
-			paths = ft_split(env[i], ':');
-			if (!paths)
-				error_exit("malloc", 1);
-			break ;
-		}
+	while (ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
-	}
+	paths = ft_split(env[i], ':');
+	if (!paths)
+		error_exit("Malloc failed", 1);
 	tmp = paths[0];
-	paths[0] = ft_split(paths[0], '=')[1];
-	if (paths[0] == NULL)
-		error_exit("malloc", 1);
+	first_paths = ft_split(paths[0], '=');
+	paths[0] = first_paths[1];
+	free_nested_array(first_paths);
 	free(tmp);
+	if (paths[0] == NULL)
+		error_exit("Malloc failed", 1);
 	return (paths);
 }
 
@@ -67,11 +64,13 @@ static char	*make_path(char *path)
 	char	*tmp;
 
 	command = ft_strdup(path);
+	if (command == NULL)
+		error_exit("Malloc failed", 1);
 	tmp = command;
 	command = ft_strjoin(command, "/");
 	free(tmp);
 	if (command == NULL)
-		error_exit("malloc", 1);
+		error_exit("Malloc failed", 1);
 	return (command);
 }
 
@@ -91,7 +90,7 @@ char	*command_in_paths(char *argument, char **paths)
 		command = ft_strjoin(command, argument);
 		free(tmp);
 		if (command == NULL)
-			error_exit("malloc", 1);
+			error_exit("Malloc failed", 1);
 		if (access(command, F_OK) != -1)
 			return (command);
 		i++;
@@ -99,5 +98,3 @@ char	*command_in_paths(char *argument, char **paths)
 	error_exit(argument, 1);
 	return (NULL);
 }
-
-//65536 max
