@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/21 12:18:48 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/01 14:40:09 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/01 22:15:41 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,23 @@ void	wait_for_pids(pid_t *pids)
 		waitpid(pids[i], NULL, 0);
 		i++;
 	}
+}
+
+pid_t	heredoc_execute(t_data data, int d2_out)
+{
+	pid_t	pid;
+	char	*input;
+
+	pid = fork();
+	if (pid < 0)
+		error_exit("Fork failed", 1);
+	if (pid == 0)
+	{
+		input = read_stdin_until(data.argv[2]);
+		write(d2_out, input, ft_strlen(input));
+		close_fds(data);
+	}
+	return (pid);
 }
 
 pid_t	fork_execute(t_data data, char **commands, int d2_in, int d2_out)
@@ -58,9 +75,12 @@ pid_t	execute_command(t_data data, int i)
 	command = ft_split(data.argv[i], ' ');
 	if (command == NULL)
 		error_exit("Malloc failed", 1);
-	if (i == 2)
+
+	if (i == 2 && data.heredoc == 1)
+		pid = heredoc_execute(data, data.fd_pipes[i - 2][1]);
+	else if (i == 2 && data.heredoc == 0)
 		pid = fork_execute(data, command, data.fd_in, data.fd_pipes[i - 2][1]);
-	else if (i == data.argc - 2)
+	else if (i == data.argc - 2 - data.heredoc)
 	{
 		data.fd_out = open_outputfile(data.argv[data.argc - 1]);
 		pid = fork_execute(data, command, data.fd_pipes[i - 3][0],
@@ -86,7 +106,7 @@ int	main(int argc, char **argv, char **env)
 	if (pids == NULL)
 		error_exit("Malloc failed", 1);
 	i = 2;
-	while (i < argc - 1)
+	while (i < argc - 1 - data.heredoc)
 	{
 		pids[i - 2] = execute_command(data, i);
 		i++;
