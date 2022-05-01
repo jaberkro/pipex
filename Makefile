@@ -6,7 +6,7 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/04/14 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/05/01 12:53:10 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/05/01 14:37:01 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,13 +50,12 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 $(NAME): $(LIBFT) $(OBJ)
 	cp $(LIBFT) ./$(NAME)
 	gcc $(FLAGS) $(OBJ) $(LIBFT) $(INC) -o $(NAME)
-	@echo "$(RED)Done $(GREEN)COM$(YELLOW)PI$(BLUE)LING $(PINK)PIPEX$(RESET) :)"
+	@echo "$(RED)Done $(GREEN)COM$(YELLOW)PI$(BLUE)LING $(PINK)PIPEX$(RESET):)"
 
 $(LIBFT):
 	$(MAKE) bonus -C $(LIBFT_DIR)
 
 bonus:
-	rm -f $(NAME)
 	$(MAKE) WITH_BONUS=1 all
 
 clean:
@@ -70,4 +69,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
