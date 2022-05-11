@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/21 12:18:48 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/01 22:15:41 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 18:34:15 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,12 @@ void	wait_for_pids(pid_t *pids)
 	}
 }
 
-pid_t	heredoc_execute(t_data data, int d2_out)
+void	heredoc_execute(t_data data, int d2_out)
 {
-	pid_t	pid;
 	char	*input;
 
-	pid = fork();
-	if (pid < 0)
-		error_exit("Fork failed", 1);
-	if (pid == 0)
-	{
-		input = read_stdin_until(data.argv[2]);
-		write(d2_out, input, ft_strlen(input));
-		close_fds(data);
-	}
-	return (pid);
+	input = read_stdin_until(data.argv[2]);
+	write(d2_out, input, ft_strlen(input));
 }
 
 pid_t	fork_execute(t_data data, char **commands, int d2_in, int d2_out)
@@ -75,14 +66,11 @@ pid_t	execute_command(t_data data, int i)
 	command = ft_split(data.argv[i], ' ');
 	if (command == NULL)
 		error_exit("Malloc failed", 1);
-
-	if (i == 2 && data.heredoc == 1)
-		pid = heredoc_execute(data, data.fd_pipes[i - 2][1]);
-	else if (i == 2 && data.heredoc == 0)
+	if (i == 2 && data.heredoc == 0)
 		pid = fork_execute(data, command, data.fd_in, data.fd_pipes[i - 2][1]);
-	else if (i == data.argc - 2 - data.heredoc)
+	else if (i == data.argc - 2)
 	{
-		data.fd_out = open_outputfile(data.argv[data.argc - 1]);
+		data.fd_out = open_outputfile(data.argv[data.argc - 1], data.heredoc);
 		pid = fork_execute(data, command, data.fd_pipes[i - 3][0],
 				data.fd_out);
 	}
@@ -105,8 +93,10 @@ int	main(int argc, char **argv, char **env)
 	pids = malloc((argc - 3) * sizeof(pid_t));
 	if (pids == NULL)
 		error_exit("Malloc failed", 1);
-	i = 2;
-	while (i < argc - 1 - data.heredoc)
+	i = 2 + data.heredoc;
+	if (data.heredoc == 1)
+		heredoc_execute(data, data.fd_pipes[0][1]);
+	while (i < argc - 1)
 	{
 		pids[i - 2] = execute_command(data, i);
 		i++;
