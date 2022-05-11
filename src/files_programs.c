@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:00:43 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/01 14:26:04 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 10:17:53 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	open_outputfile(char *file)
 {
 	int	fd;
 
-	fd = open(file, O_WRONLY | O_CREAT, 0755);
+	fd = open(file, O_WRONLY | O_CREAT, 0644);
 	if (fd < 0)
 		error_exit(file, 1);
 	return (fd);
