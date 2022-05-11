@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:10:18 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 10:53:12 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 11:11:00 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@ char	**get_paths(char **env)
 
 	i = 0;
 	paths = NULL;
-	while (ft_strncmp(env[i], "PATH=", 5) != 0)
+	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
+	if (env[i] == NULL)
+		return (NULL);
 	paths = ft_split(env[i], ':');
 	if (!paths)
 		error_exit("Malloc failed", 1);
