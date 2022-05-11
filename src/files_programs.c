@@ -6,13 +6,11 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:00:43 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 10:53:14 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 11:03:22 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-
 
 int	open_outputfile(char *file)
 {
@@ -49,7 +47,7 @@ char	*command_in_paths(char *argument, char **paths)
 	i = 0;
 	if (access(argument, F_OK) != -1)
 		return (argument);
-	while (paths[i])
+	while (paths && paths[i])
 	{
 		command = make_path(paths[i]);
 		tmp = command;

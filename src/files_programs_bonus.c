@@ -6,19 +6,20 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/20 21:03:09 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 10:53:52 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 17:53:02 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-
-
-int	open_outputfile(char *file)
+int	open_outputfile(char *file, int heredoc)
 {
 	int	fd;
 
-	fd = open(file, O_WRONLY | O_CREAT, 0644);
+	if (heredoc == 1)
+		fd = open(file, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	else
+		fd = open(file, O_WRONLY | O_CREAT, 0644);
 	if (fd < 0)
 		error_exit(file, 1);
 	return (fd);
@@ -49,7 +50,7 @@ char	*command_in_paths(char *argument, char **paths)
 	i = 0;
 	if (access(argument, F_OK) != -1)
 		return (argument);
-	while (paths[i])
+	while (paths && paths[i])
 	{
 		command = make_path(paths[i]);
 		tmp = command;
