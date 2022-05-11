@@ -6,38 +6,35 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/24 21:12:39 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 18:33:03 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 18:43:53 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	**get_paths(char **env)
+int	open_outputfile_bonus(char *file, int heredoc)
 {
-	int		i;
-	char	**paths;
-	char	**first_paths;
-	char	*tmp;
+	int	fd;
 
-	i = 0;
-	paths = NULL;
-	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
-		i++;
-	if (env[i] == NULL)
-		return (NULL);
-	paths = ft_split(env[i], ':');
-	if (!paths)
-		error_exit("Malloc failed", 1);
-	tmp = paths[0];
-	first_paths = ft_split(paths[0], '=');
-	if (first_paths == NULL)
-		error_exit("Malloc failed", 1);
-	paths[0] = ft_strdup(first_paths[1]);
-	free_nested_array(first_paths);
-	free(tmp);
-	if (paths[0] == NULL)
-		error_exit("Malloc failed", 1);
-	return (paths);
+	if (heredoc == 1)
+		fd = open(file, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	else
+		fd = open(file, O_WRONLY | O_CREAT, 0644);
+	if (fd < 0)
+		error_exit(file, 1);
+	return (fd);
+}
+
+int	open_inputfile(char *file)
+{
+	int	fd;
+
+	if (access(file, F_OK) == -1 || access(file, R_OK) == -1)
+		error_exit(file, 1);
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		error_exit(file, 1);
+	return (fd);
 }
 
 char	*read_stdin_until(char *limiter)
@@ -89,18 +86,6 @@ int	**create_pipes(int amount)
 	}
 	pipes[i] = NULL;
 	return (pipes);
-}
-
-int	open_inputfile(char *file)
-{
-	int	fd;
-
-	if (access(file, F_OK) == -1 || access(file, R_OK) == -1)
-		error_exit(file, 1);
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		error_exit(file, 1);
-	return (fd);
 }
 
 t_data	init_data(int argc, char **argv, char **env)

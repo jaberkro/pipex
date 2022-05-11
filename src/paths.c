@@ -1,26 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   files_programs.c                                   :+:    :+:            */
+/*   paths.c                                            :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:00:43 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 11:03:22 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 18:36:56 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-int	open_outputfile(char *file)
-{
-	int	fd;
-
-	fd = open(file, O_WRONLY | O_CREAT, 0644);
-	if (fd < 0)
-		error_exit(file, 1);
-	return (fd);
-}
 
 static char	*make_path(char *path)
 {
@@ -61,4 +51,30 @@ char	*command_in_paths(char *argument, char **paths)
 	}
 	error_exit(argument, 1);
 	return (NULL);
+}
+
+char	**get_paths(char **env)
+{
+	int		i;
+	char	**paths;
+	char	**first_paths;
+	char	*tmp;
+
+	i = 0;
+	paths = NULL;
+	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
+		i++;
+	if (env[i] == NULL)
+		return (NULL);
+	paths = ft_split(env[i], ':');
+	if (!paths)
+		error_exit("Malloc failed", 1);
+	tmp = paths[0];
+	first_paths = ft_split(paths[0], '=');
+	paths[0] = first_paths[1];
+	free_nested_array(first_paths);
+	free(tmp);
+	if (paths[0] == NULL)
+		error_exit("Malloc failed", 1);
+	return (paths);
 }

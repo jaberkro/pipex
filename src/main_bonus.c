@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/21 12:18:48 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 18:34:15 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 18:42:58 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ pid_t	execute_command(t_data data, int i)
 		pid = fork_execute(data, command, data.fd_in, data.fd_pipes[i - 2][1]);
 	else if (i == data.argc - 2)
 	{
-		data.fd_out = open_outputfile(data.argv[data.argc - 1], data.heredoc);
+		data.fd_out = open_outputfile_bonus(data.argv[data.argc - 1], data.heredoc);
 		pid = fork_execute(data, command, data.fd_pipes[i - 3][0],
 				data.fd_out);
 	}
