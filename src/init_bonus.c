@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/24 21:12:39 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 10:53:50 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 18:33:03 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,18 @@ char	**get_paths(char **env)
 
 	i = 0;
 	paths = NULL;
-	while (ft_strncmp(env[i], "PATH=", 5) != 0)
+	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
+	if (env[i] == NULL)
+		return (NULL);
 	paths = ft_split(env[i], ':');
 	if (!paths)
 		error_exit("Malloc failed", 1);
 	tmp = paths[0];
 	first_paths = ft_split(paths[0], '=');
-	paths[0] = first_paths[1];
+	if (first_paths == NULL)
+		error_exit("Malloc failed", 1);
+	paths[0] = ft_strdup(first_paths[1]);
 	free_nested_array(first_paths);
 	free(tmp);
 	if (paths[0] == NULL)
@@ -49,7 +53,8 @@ char	*read_stdin_until(char *limiter)
 	buf = get_next_line(0);
 	if (buf == NULL)
 		error_exit("Malloc failed", 1);
-	while (ft_strncmp(buf, limiter, ft_strlen(limiter)) != 0)
+	while (!(ft_strncmp(buf, limiter, ft_strlen(limiter)) == 0 && \
+			ft_strlen(buf) == ft_strlen(limiter) + 1))
 	{
 		tmp = input;
 		input = ft_strjoin(input, buf);
