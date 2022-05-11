@@ -6,23 +6,13 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/20 21:03:09 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 10:51:54 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 10:53:52 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	open_inputfile(char *file)
-{
-	int	fd;
 
-	if (access(file, F_OK) == -1 || access(file, R_OK) == -1)
-		error_exit(file, 1);
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		error_exit(file, 1);
-	return (fd);
-}
 
 int	open_outputfile(char *file)
 {

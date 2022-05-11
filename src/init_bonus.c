@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/24 21:12:39 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 10:51:52 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 10:53:50 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,18 @@ int	**create_pipes(int amount)
 	}
 	pipes[i] = NULL;
 	return (pipes);
+}
+
+int	open_inputfile(char *file)
+{
+	int	fd;
+
+	if (access(file, F_OK) == -1 || access(file, R_OK) == -1)
+		error_exit(file, 1);
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		error_exit(file, 1);
+	return (fd);
 }
 
 t_data	init_data(int argc, char **argv, char **env)
