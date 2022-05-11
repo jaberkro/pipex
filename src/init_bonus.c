@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/24 21:12:39 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 18:43:53 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 20:20:15 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,12 @@ char	*read_stdin_until(char *limiter)
 		if (input == NULL)
 			error_exit("Malloc failed", 1);
 		ft_printf(">");
+		free(buf);
 		buf = get_next_line(0);
 		if (buf == NULL)
 			error_exit("Malloc failed", 1);
 	}
+	free(buf);
 	return (input);
 }
 
