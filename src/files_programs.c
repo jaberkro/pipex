@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:00:43 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 10:17:53 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 10:51:05 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,30 +32,6 @@ int	open_outputfile(char *file)
 	if (fd < 0)
 		error_exit(file, 1);
 	return (fd);
-}
-
-char	**get_paths(char **env)
-{
-	int		i;
-	char	**paths;
-	char	**first_paths;
-	char	*tmp;
-
-	i = 0;
-	paths = NULL;
-	while (ft_strncmp(env[i], "PATH=", 5) != 0)
-		i++;
-	paths = ft_split(env[i], ':');
-	if (!paths)
-		error_exit("Malloc failed", 1);
-	tmp = paths[0];
-	first_paths = ft_split(paths[0], '=');
-	paths[0] = first_paths[1];
-	free_nested_array(first_paths);
-	free(tmp);
-	if (paths[0] == NULL)
-		error_exit("Malloc failed", 1);
-	return (paths);
 }
 
 static char	*make_path(char *path)

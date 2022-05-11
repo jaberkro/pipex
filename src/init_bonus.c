@@ -6,11 +6,35 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/24 21:12:39 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/01 21:57:38 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 10:51:52 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+char	**get_paths(char **env)
+{
+	int		i;
+	char	**paths;
+	char	**first_paths;
+	char	*tmp;
+
+	i = 0;
+	paths = NULL;
+	while (ft_strncmp(env[i], "PATH=", 5) != 0)
+		i++;
+	paths = ft_split(env[i], ':');
+	if (!paths)
+		error_exit("Malloc failed", 1);
+	tmp = paths[0];
+	first_paths = ft_split(paths[0], '=');
+	paths[0] = first_paths[1];
+	free_nested_array(first_paths);
+	free(tmp);
+	if (paths[0] == NULL)
+		error_exit("Malloc failed", 1);
+	return (paths);
+}
 
 char	*read_stdin_until(char *limiter)
 {
