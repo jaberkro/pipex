@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/21 12:18:48 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 18:42:58 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/11 20:21:22 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	heredoc_execute(t_data data, int d2_out)
 
 	input = read_stdin_until(data.argv[2]);
 	write(d2_out, input, ft_strlen(input));
+	free(input);
 }
 
 pid_t	fork_execute(t_data data, char **commands, int d2_in, int d2_out)
