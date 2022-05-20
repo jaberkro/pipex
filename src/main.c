@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:14:55 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/20 11:11:38 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/20 11:38:27 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	protected_dup2(int newfd, int oldfd)
 		error_exit("Dup2 failed", 1);
 }
 
-int	protected_fork()
+int	protected_fork(void)
 {
 	int	pid;
 
@@ -46,7 +46,7 @@ void	executer(int i, int max, int readfd, t_data data)
 	int		pid;
 	char	*path;
 	char	**command;
-	
+
 	command = ft_split(data.argv[i], ' ');
 	if (command == NULL)
 		error_exit("Malloc failed", 1);

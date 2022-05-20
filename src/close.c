@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/30 21:15:46 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/20 11:12:47 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/20 11:38:58 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	free_nested_array(char **to_free)
 	free(to_free);
 }
 
-void close3(int fd1, int fd2, int fd3)
+void	close3(int fd1, int fd2, int fd3)
 {
 	if (fd1 != -1)
 		close(fd1);
