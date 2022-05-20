@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:14:55 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/12 14:49:26 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/20 11:11:38 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,71 +24,67 @@ void	wait_for_pids(pid_t *pids)
 	}
 }
 
-pid_t	fork_execute(t_data data, char **command, int d2_in, int d2_out)
+void	protected_dup2(int newfd, int oldfd)
 {
-	pid_t	pid;
-	char	*path;
+	if (dup2(newfd, oldfd) < 0)
+		error_exit("Dup2 failed", 1);
+}
+
+int	protected_fork()
+{
+	int	pid;
 
 	pid = fork();
 	if (pid < 0)
 		error_exit("Fork failed", 1);
-	if (pid == 0)
-	{
-		path = command_in_paths(command[0], data.paths);
-		if (path == NULL)
-			error_exit(command[0], 127);
-		if (dup2(d2_in, STDIN_FILENO) < 0)
-			error_exit("Dup2 failed", 1);
-		if (dup2(d2_out, STDOUT_FILENO) < 0)
-			error_exit("Dup2 failed", 1);
-		close(d2_in);
-		close(d2_out);
-		close_fds(data);
-		if (execve(path, command, data.env) < 0)
-			error_exit("Execve failed", 1);
-	}
 	return (pid);
 }
 
-pid_t	execute_command(t_data data, int i)
+void	executer(int i, int max, int readfd, t_data data)
 {
+	int		fd[2];
+	int		pid;
+	char	*path;
 	char	**command;
-	pid_t	pid;
-
+	
 	command = ft_split(data.argv[i], ' ');
 	if (command == NULL)
 		error_exit("Malloc failed", 1);
-	if (i == 2)
-		pid = fork_execute(data, command, data.fd_in, data.fd_pipes[0][1]);
-	else
+	path = command_in_paths(command[0], data.paths);
+	if (pipe(fd) < 0)
+		error_exit("Pipe failed", 1);
+	pid = protected_fork();
+	if (pid == 0)
 	{
-		data.fd_out = open_outputfile(data.argv[data.argc - 1]);
-		pid = fork_execute(data, command, data.fd_pipes[0][0], data.fd_out);
+		if (i == max)
+			fd[1] = open_outputfile(data.argv[data.argc - 1]);
+		protected_dup2(fd[1], STDOUT_FILENO);
+		protected_dup2(readfd, STDIN_FILENO);
+		close3(readfd, fd[0], fd[1]);
+		if (execve(path, command, data.env) < 0)
+			error_exit("Execve failed", 1);
 	}
-	free_nested_array(command);
-	return (pid);
+	close3(readfd, fd[1], -1);
+	if (i != max)
+		executer(i + 1, max, fd[0], data);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	t_data	data;
 	int		i;
-	pid_t	*pids;
+	int		fdin;
 
 	if (argc < 5 || argc > 5)
 		write_exit("Amount of arguments must be 4\n", 1);
 	data = init_data(argc, argv, env);
-	pids = malloc((argc - 3) * sizeof(pid_t));
-	if (pids == NULL)
-		error_exit("Malloc failed", 1);
+	fdin = open_inputfile(data.argv[1]);
 	i = 2;
-	while (i < argc - 1)
+	executer(i, argc - 2, fdin, data);
+	while (i < argc - 2)
 	{
-		pids[i - 2] = execute_command(data, i);
+		waitpid(-1, NULL, WUNTRACED);
 		i++;
 	}
-	pids[i] = 0;
-	close_fds(data);
-	wait_for_pids(pids);
 	return (1);
 }

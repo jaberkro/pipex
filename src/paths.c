@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:00:43 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 18:36:56 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/18 18:27:19 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*command_in_paths(char *argument, char **paths)
 			return (command);
 		i++;
 	}
-	error_exit(argument, 1);
+	error_exit(argument, 127);
 	return (NULL);
 }
 
