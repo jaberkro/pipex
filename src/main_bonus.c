@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/21 12:18:48 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/21 17:02:46 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 20:44:19 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int	main(int argc, char **argv, char **env)
 	int		i;
 	int		fdin;
 	int		heredoc_fd[2];
+	int		status;
 
 	if (argc < 5 || (argc < 6 && ft_strncmp(argv[1], "here_doc", 8) == 0))
 		write_exit("Not enough arguments\n", 1);
@@ -90,10 +91,9 @@ int	main(int argc, char **argv, char **env)
 	else
 		fdin = open_inputfile(data.argv[1]);
 	executer(i, argc - 2, fdin, data);
-	while (i < argc - 2)
+	while (	waitpid(-1, &status, 0) != -1)
 	{
-		waitpid(-1, NULL, WUNTRACED);
 		i++;
 	}
-	return (1);
+	exit(WEXITSTATUS(status));
 }

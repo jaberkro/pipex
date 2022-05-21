@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:14:55 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/21 17:02:45 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 20:47:17 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	executer(int i, int max, int readfd, t_data data)
 		protected_dup2(fd[1], readfd);
 		close3(readfd, fd[0], fd[1]);
 		if (execve(path, command, data.env) < 0)
-			error_exit(command[0], 1);
+			command_not_found(command[0]);
 	}
 	close3(readfd, fd[1], -1);
 	if (i != max)
@@ -64,6 +64,7 @@ int	main(int argc, char **argv, char **env)
 	t_data	data;
 	int		i;
 	int		fdin;
+	int		status;
 
 	if (argc < 5 || argc > 5)
 		write_exit("Amount of arguments must be 4\n", 1);
@@ -71,10 +72,9 @@ int	main(int argc, char **argv, char **env)
 	fdin = open_inputfile(data.argv[1]);
 	i = 2;
 	executer(i, argc - 2, fdin, data);
-	while (i < argc - 2)
+	while (	waitpid(-1, &status, 0) != -1)
 	{
-		waitpid(-1, NULL, WUNTRACED);
 		i++;
 	}
-	return (1);
+	exit(WEXITSTATUS(status));
 }

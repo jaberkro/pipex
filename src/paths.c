@@ -6,13 +6,13 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:00:43 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/21 19:05:53 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 22:03:05 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	command_not_found(char *argument)
+void	command_not_found(char *argument)
 {
 	if (argument)
 		ft_printf("%s", argument);
@@ -43,10 +43,17 @@ char	*command_in_paths(char *argument, char **paths)
 	char	*tmp;
 
 	i = 0;
+	if (access(argument, F_OK) != -1)
+		return(argument);
+	if (!paths)
+	{
+		if (argument)
+			ft_printf("%s", argument);
+		ft_printf(": No such file or directory\n");
+		exit(127); // maybe 127?
+	}
 	if (!argument)
 		command_not_found(argument);
-	if (access(argument, F_OK) != -1)
-		return (argument);
 	while (paths && paths[i])
 	{
 		command = make_path(paths[i]);
@@ -59,7 +66,8 @@ char	*command_in_paths(char *argument, char **paths)
 			return (command);
 		i++;
 	}
-	command_not_found(argument);
+	ft_printf("%s: No such file or directory\n", argument);
+	exit(127);
 	return (NULL);
 }
 
