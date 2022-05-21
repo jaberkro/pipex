@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   clean_bonus.c                                      :+:    :+:            */
+/*   close_bonus.c                                      :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/01 12:09:06 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/01 14:05:33 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 14:37:09 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,6 @@ void	write_exit(char *message, int exit_code)
 	exit(exit_code);
 }
 
-void	close_fds(t_data data)
-{
-	int	i;
-
-	i = 0;
-	while (data.fd_pipes && data.fd_pipes[i] != NULL)
-	{
-		close(data.fd_pipes[i][0]);
-		close(data.fd_pipes[i][1]);
-		i++;
-	}
-	close(data.fd_in);
-	close(data.fd_out);
-}
-
 void	free_nested_array(char **to_free)
 {
 	int	i;
@@ -50,4 +35,14 @@ void	free_nested_array(char **to_free)
 		i++;
 	}
 	free(to_free);
+}
+
+void	close3(int fd1, int fd2, int fd3)
+{
+	if (fd1 != -1)
+		close(fd1);
+	if (fd2 != -1)
+		close(fd2);
+	if (fd3 != -1)
+		close(fd3);
 }

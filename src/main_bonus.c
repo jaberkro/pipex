@@ -6,104 +6,94 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/21 12:18:48 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 20:21:22 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 17:02:46 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	wait_for_pids(pid_t *pids)
+static void	protected_dup2(int writefd, int readfd)
 {
-	int	i;
-
-	i = 0;
-	while (pids && pids[i])
-	{
-		waitpid(pids[i], NULL, 0);
-		i++;
-	}
+	if (dup2(writefd, STDOUT_FILENO) < 0)
+		error_exit("Dup2 failed", 1);
+	if (dup2(readfd, STDIN_FILENO) < 0)
+		error_exit("Dup2 failed", 1);
 }
 
-void	heredoc_execute(t_data data, int d2_out)
+static int	protected_fork(void)
 {
-	char	*input;
-
-	input = read_stdin_until(data.argv[2]);
-	write(d2_out, input, ft_strlen(input));
-	free(input);
-}
-
-pid_t	fork_execute(t_data data, char **commands, int d2_in, int d2_out)
-{
-	pid_t	pid;
-	char	*path;
+	int	pid;
 
 	pid = fork();
 	if (pid < 0)
 		error_exit("Fork failed", 1);
-	if (pid == 0)
-	{
-		path = command_in_paths(commands[0], data.paths);
-		if (path == NULL)
-			error_exit(commands[0], 127);
-		if (dup2(d2_in, STDIN_FILENO) < 0)
-			error_exit("Dup2 failed", 1);
-		if (dup2(d2_out, STDOUT_FILENO) < 0)
-			error_exit("Dup2 failed", 1);
-		close(d2_in);
-		close(d2_out);
-		close_fds(data);
-		if (execve(path, commands, data.env) < 0)
-			error_exit("Execve failed", 1);
-	}
 	return (pid);
 }
 
-pid_t	execute_command(t_data data, int i)
+static void	heredoc_execute(t_data data, int heredoc_fd[2])
 {
-	char	**command;
-	pid_t	pid;
+	char	*input;
 
-	command = ft_split(data.argv[i], ' ');
-	if (command == NULL)
-		error_exit("Malloc failed", 1);
-	if (i == 2 && data.heredoc == 0)
-		pid = fork_execute(data, command, data.fd_in, data.fd_pipes[i - 2][1]);
-	else if (i == data.argc - 2)
+	input = read_stdin_until(data.argv[2]);
+	write(heredoc_fd[1], input, ft_strlen(input));
+	close(heredoc_fd[1]);
+	free(input);
+}
+
+static void	executer(int i, int max, int readfd, t_data data)
+{
+	int		fd[2];
+	int		pid;
+	char	*path;
+	char	**command;
+
+	if (pipe(fd) < 0)
+		error_exit("Pipe failed", 1);
+	pid = protected_fork();
+	if (pid == 0)
 	{
-		data.fd_out = open_outputfile_bonus(data.argv[data.argc - 1], data.heredoc);
-		pid = fork_execute(data, command, data.fd_pipes[i - 3][0],
-				data.fd_out);
+		check_permission_infile(readfd, data.argv[i - 1]);
+		if (i == max)
+			fd[1] = open_outputfile(data.argv[data.argc - 1], data.heredoc);
+		command = ft_split(data.argv[i], ' ');
+		if (command == NULL)
+			error_exit("Malloc failed", 1);
+		path = command_in_paths(command[0], data.paths);
+		protected_dup2(fd[1], readfd);
+		close3(readfd, fd[0], fd[1]);
+		if (execve(path, command, data.env) < 0)
+			error_exit("Execve failed", 1);
 	}
-	else
-	{
-		pid = fork_execute(data, command, data.fd_pipes[i - 3][0],
-				data.fd_pipes[i - 2][1]);
-	}
-	free_nested_array(command);
-	return (pid);
+	close3(readfd, fd[1], -1);
+	if (i != max)
+		executer(i + 1, max, fd[0], data);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	t_data	data;
 	int		i;
-	pid_t	*pids;
+	int		fdin;
+	int		heredoc_fd[2];
 
+	if (argc < 5 || (argc < 6 && ft_strncmp(argv[1], "here_doc", 8) == 0))
+		write_exit("Not enough arguments\n", 1);
 	data = init_data(argc, argv, env);
-	pids = malloc((argc - 3) * sizeof(pid_t));
-	if (pids == NULL)
-		error_exit("Malloc failed", 1);
 	i = 2 + data.heredoc;
 	if (data.heredoc == 1)
-		heredoc_execute(data, data.fd_pipes[0][1]);
-	while (i < argc - 1)
 	{
-		pids[i - 2] = execute_command(data, i);
+		if (pipe(heredoc_fd) < 0)
+			error_exit("Pipe failed", 1);
+		heredoc_execute(data, heredoc_fd);
+		fdin = heredoc_fd[0];
+	}
+	else
+		fdin = open_inputfile(data.argv[1]);
+	executer(i, argc - 2, fdin, data);
+	while (i < argc - 2)
+	{
+		waitpid(-1, NULL, WUNTRACED);
 		i++;
 	}
-	pids[i] = 0;
-	close_fds(data);
-	wait_for_pids(pids);
 	return (1);
 }

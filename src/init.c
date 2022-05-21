@@ -6,17 +6,20 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:10:18 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/20 11:38:40 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 16:22:18 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	open_outputfile(char *file)
+int	open_outputfile(char *file, int heredoc)
 {
 	int	fd;
 
-	fd = open(file, O_WRONLY | O_CREAT, 0644);
+	if (heredoc == 1)
+		fd = open(file, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	else
+		fd = open(file, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	if (fd < 0)
 		error_exit(file, 1);
 	return (fd);
@@ -26,11 +29,13 @@ int	open_inputfile(char *file)
 {
 	int	fd;
 
-	if (access(file, F_OK) == -1 || access(file, R_OK) == -1)
-		error_exit(file, 1);
+	if (access(file, F_OK) == -1)
+		return (-1);
+	if (access(file, R_OK) == -1)
+		return (-2);
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		error_exit(file, 1);
+		error_exit("Open failed", 1);
 	return (fd);
 }
 

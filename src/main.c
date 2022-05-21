@@ -6,31 +6,21 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:14:55 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/20 11:38:27 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 17:02:45 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	wait_for_pids(pid_t *pids)
+static void	protected_dup2(int writefd, int readfd)
 {
-	int	i;
-
-	i = 0;
-	while (pids && pids[i])
-	{
-		waitpid(pids[i], NULL, 0);
-		i++;
-	}
-}
-
-void	protected_dup2(int newfd, int oldfd)
-{
-	if (dup2(newfd, oldfd) < 0)
+	if (dup2(writefd, STDOUT_FILENO) < 0)
+		error_exit("Dup2 failed", 1);
+	if (dup2(readfd, STDIN_FILENO) < 0)
 		error_exit("Dup2 failed", 1);
 }
 
-int	protected_fork(void)
+static int	protected_fork(void)
 {
 	int	pid;
 
@@ -40,29 +30,29 @@ int	protected_fork(void)
 	return (pid);
 }
 
-void	executer(int i, int max, int readfd, t_data data)
+static void	executer(int i, int max, int readfd, t_data data)
 {
 	int		fd[2];
 	int		pid;
 	char	*path;
 	char	**command;
 
-	command = ft_split(data.argv[i], ' ');
-	if (command == NULL)
-		error_exit("Malloc failed", 1);
-	path = command_in_paths(command[0], data.paths);
 	if (pipe(fd) < 0)
 		error_exit("Pipe failed", 1);
 	pid = protected_fork();
 	if (pid == 0)
 	{
+		check_permission_infile(readfd, data.argv[i - 1]);
 		if (i == max)
-			fd[1] = open_outputfile(data.argv[data.argc - 1]);
-		protected_dup2(fd[1], STDOUT_FILENO);
-		protected_dup2(readfd, STDIN_FILENO);
+			fd[1] = open_outputfile(data.argv[data.argc - 1], data.heredoc);
+		command = ft_split(data.argv[i], ' ');
+		if (command == NULL)
+			error_exit("Malloc failed", 1);
+		path = command_in_paths(command[0], data.paths);
+		protected_dup2(fd[1], readfd);
 		close3(readfd, fd[0], fd[1]);
 		if (execve(path, command, data.env) < 0)
-			error_exit("Execve failed", 1);
+			error_exit(command[0], 1);
 	}
 	close3(readfd, fd[1], -1);
 	if (i != max)

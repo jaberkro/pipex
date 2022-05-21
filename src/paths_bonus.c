@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/20 21:03:09 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 18:39:59 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 16:47:20 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ char	*command_in_paths(char *argument, char **paths)
 			return (command);
 		i++;
 	}
-	error_exit(argument, 1);
+	ft_printf("%s: command not found\n", argument);
+	exit(127);
 	return (NULL);
 }
 
@@ -79,4 +80,16 @@ char	**get_paths(char **env)
 	if (paths[0] == NULL)
 		error_exit("Malloc failed", 1);
 	return (paths);
+}
+
+void	check_permission_infile(int fd, char *argument)
+{
+	if (fd < 0)
+	{
+		if (fd == -1)
+			ft_printf("%s: No such file or directory\n", argument);
+		else if (fd == -2)
+			ft_printf("%s: Permission denied\n", argument);
+		exit(1);
+	}	
 }
