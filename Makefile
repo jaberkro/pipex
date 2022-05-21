@@ -6,7 +6,7 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/04/14 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/05/11 18:40:39 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/05/21 16:35:28 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,11 +45,11 @@ $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	gcc $(FLAGS) $(INC) -c $^ -o $@
+	CC $(FLAGS) $(INC) -c $^ -o $@
 
 $(NAME): $(LIBFT) $(OBJ)
 	cp $(LIBFT) ./$(NAME)
-	gcc $(FLAGS) $(OBJ) $(LIBFT) $(INC) -o $(NAME)
+	CC $(FLAGS) $(OBJ) $(LIBFT) $(INC) -o $(NAME)
 	@echo "$(RED)Done $(GREEN)COM$(YELLOW)PI$(BLUE)LING $(PINK)PIPEX$(RESET):)"
 
 $(LIBFT):
