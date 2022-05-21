@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 14:00:43 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/21 16:47:37 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 17:21:57 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,11 @@ char	**get_paths(char **env)
 		error_exit("Malloc failed", 1);
 	tmp = paths[0];
 	first_paths = ft_split(paths[0], '=');
+	if (first_paths == NULL)
+		error_exit("Malloc failed", 1);
 	paths[0] = first_paths[1];
 	free_nested_array(first_paths);
 	free(tmp);
-	if (paths[0] == NULL)
-		error_exit("Malloc failed", 1);
 	return (paths);
 }
 
