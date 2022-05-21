@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:15:22 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/11 18:42:47 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 16:47:57 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@
 # include <stdlib.h>
 
 typedef struct s_data{
-	int		fd_in;
-	int		**fd_pipes;
-	int		fd_out;
 	int		argc;
 	char	**argv;
 	char	**env;
@@ -30,19 +27,18 @@ typedef struct s_data{
 	int		heredoc;
 }	t_data;
 
+int		open_inputfile(char *file);
+int		open_outputfile(char *file, int heredoc);
+char	*read_stdin_until(char *limiter);
 t_data	init_data(int argc, char **argv, char **env);
 
-int		open_inputfile(char *file);
-int		open_outputfile(char *file);
-int		open_outputfile_bonus(char *file, int heredoc);
-char	**get_paths(char **env);
 char	*command_in_paths(char *argument, char **paths);
+char	**get_paths(char **env);
+void	check_permission_infile(int fd, char *argument);
 
 void	error_exit(char *message, int exit_code);
 void	write_exit(char *message, int exit_code);
-void	close_fds(t_data data);
 void	free_nested_array(char **to_free);
-
-char	*read_stdin_until(char *limiter);
+void	close3(int fd1, int fd2, int fd3);
 
 #endif
