@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/14 12:15:22 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/21 16:47:57 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 19:14:24 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int		open_outputfile(char *file, int heredoc);
 char	*read_stdin_until(char *limiter);
 t_data	init_data(int argc, char **argv, char **env);
 
+void	command_not_found(char *argument);
 char	*command_in_paths(char *argument, char **paths);
 char	**get_paths(char **env);
 void	check_permission_infile(int fd, char *argument);
