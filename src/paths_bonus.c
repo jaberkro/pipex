@@ -6,11 +6,19 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/20 21:03:09 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/21 17:22:16 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/21 19:06:30 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+static void	command_not_found(char *argument)
+{
+	if (argument)
+		ft_printf("%s", argument);
+	ft_printf(": command not found\n");
+	exit(127);
+}
 
 static char	*make_path(char *path)
 {
@@ -35,6 +43,8 @@ char	*command_in_paths(char *argument, char **paths)
 	char	*tmp;
 
 	i = 0;
+	if (!argument)
+		command_not_found(argument);
 	if (access(argument, F_OK) != -1)
 		return (argument);
 	while (paths && paths[i])
@@ -49,8 +59,7 @@ char	*command_in_paths(char *argument, char **paths)
 			return (command);
 		i++;
 	}
-	ft_printf("%s: command not found\n", argument);
-	exit(127);
+	command_not_found(argument);
 	return (NULL);
 }
 
