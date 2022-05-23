@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/20 21:03:09 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/23 12:56:38 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/23 17:49:04 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*command_in_paths(char *argument, char **paths)
 	char	*tmp;
 
 	i = 0;
-	if (access(argument, F_OK) != -1)
+	if (access(argument, X_OK) != -1)
 		return (argument);
 	if (!paths)
 		write_exit_argument(argument, ": No such file or directory\n", 127);
@@ -49,7 +49,7 @@ char	*command_in_paths(char *argument, char **paths)
 		free(tmp);
 		if (command == NULL)
 			error_exit("Malloc failed", 1);
-		if (access(command, F_OK) != -1)
+		if (access(command, X_OK) != -1)
 			return (command);
 		i++;
 	}
