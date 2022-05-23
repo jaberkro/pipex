@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/01 12:09:06 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/21 14:37:09 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/23 12:02:57 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@ void	error_exit(char *message, int exit_code)
 
 void	write_exit(char *message, int exit_code)
 {
+	write(2, message, ft_strlen(message));
+	exit(exit_code);
+}
+
+void	write_exit_argument(char *argument, char *message, int exit_code)
+{
+	if (argument)
+		write(2, argument, ft_strlen(argument));
 	write(2, message, ft_strlen(message));
 	exit(exit_code);
 }
