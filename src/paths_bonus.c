@@ -6,19 +6,11 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/20 21:03:09 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/21 21:59:00 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/23 12:17:08 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	command_not_found(char *argument)
-{
-	if (argument)
-		ft_printf("%s", argument);
-	ft_printf(": command not found\n");
-	exit(127);
-}
 
 static char	*make_path(char *path)
 {
@@ -46,14 +38,9 @@ char	*command_in_paths(char *argument, char **paths)
 	if (access(argument, F_OK) != -1)
 		return (argument);
 	if (!paths)
-	{
-		if (argument)
-			ft_printf("%s", argument);
-		ft_printf(": No such file or directory\n");
-		exit(127); // maybe 127?
-	}
+		write_exit_argument(argument, ": No such file or directory\n", 127);
 	if (!argument)
-		command_not_found(argument);
+		write_exit_argument(argument, ": command not found\n", 127);
 	while (paths && paths[i])
 	{
 		command = make_path(paths[i]);
@@ -66,11 +53,7 @@ char	*command_in_paths(char *argument, char **paths)
 			return (command);
 		i++;
 	}
-	
-	//error_exit(argument, 1);
-	ft_printf("%s: No such file or directory\n", argument);
-	exit(127); // maybe 127?
-	//command_not_found(argument);
+	write_exit_argument(argument, ": No such file or directory\n", 127);
 	return (NULL);
 }
 
@@ -85,31 +68,15 @@ char	**get_paths(char **env)
 	paths = NULL;
 	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
-	if (env[i] == NULL)
+	if (!env[i])
 		return (NULL);
-	paths = ft_split(env[i], ':');
-	if (!paths)
-		error_exit("Malloc failed", 1);
+	paths = protected_split(env[i], ':');
 	tmp = paths[0];
-	first_paths = ft_split(paths[0], '=');
-	if (first_paths == NULL)
-		error_exit("Malloc failed", 1);
+	first_paths = protected_split(paths[0], '=');
 	paths[0] = ft_strdup(first_paths[1]);
-	if (first_paths == NULL)
+	if (paths[0] == NULL)
 		error_exit("Malloc failed", 1);
 	free_nested_array(first_paths);
 	free(tmp);
 	return (paths);
-}
-
-void	check_permission_infile(int fd, char *argument)
-{
-	if (fd < 0)
-	{
-		if (fd == -1)
-			ft_printf("%s: No such file or directory\n", argument);
-		else if (fd == -2)
-			ft_printf("%s: Permission denied\n", argument);
-		exit(1);
-	}	
 }
