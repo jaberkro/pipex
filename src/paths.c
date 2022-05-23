@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   paths_bonus.c                                      :+:    :+:            */
+/*   paths.c                                            :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/20 21:03:09 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/23 12:17:08 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/23 12:56:38 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char	*command_in_paths(char *argument, char **paths)
 			return (command);
 		i++;
 	}
-	write_exit_argument(argument, ": No such file or directory\n", 127);
+	write_exit_argument(argument, ": command not found\n", 127);
 	return (NULL);
 }
 

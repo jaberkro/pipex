@@ -6,7 +6,7 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/04/14 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/05/23 12:33:22 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/05/23 12:41:56 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,16 +20,13 @@ LIBFT = libft/libft.a
 SRC_DIR = src
 BUILD_DIR = obj
 
-SRC = src/main_bonus.c src/init_bonus.c src/paths_bonus.c \
-	src/close_bonus.c src/protected_bonus.c
-
-SRC_BONUS = src/main_bonus.c src/init_bonus.c src/paths_bonus.c \
-	src/close_bonus.c src/protected_bonus.c
+SRC_BONUS = $(SRC_DIR)/main.c $(SRC_DIR)/init.c $(SRC_DIR)/paths.c \
+	$(SRC_DIR)/close.c $(SRC_DIR)/protected.c
 
 ifdef WITH_BONUS
 OBJ = $(subst $(SRC_DIR), $(BUILD_DIR), $(SRC_BONUS:.c=.o))
 else
-OBJ = $(subst $(SRC_DIR), $(BUILD_DIR), $(SRC:.c=.o))
+OBJ = $(subst $(SRC_DIR), $(BUILD_DIR), $(SRC_BONUS:.c=.o))
 endif
 
 # COLORS
