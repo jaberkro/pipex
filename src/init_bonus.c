@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/24 21:12:39 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/21 16:37:25 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/23 12:14:41 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,11 @@ int	open_inputfile(char *file)
 {
 	int	fd;
 
-	if (access(file, F_OK) == -1)
-		return (-1);
-	if (access(file, R_OK) == -1)
-		return (-2);
+	if (access(file, F_OK) == -1 || access(file, R_OK) == -1)
+		error_exit(file, 1);
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		error_exit("Open failed", 1);
+		error_exit(file, 1);
 	return (fd);
 }
 
@@ -76,7 +74,7 @@ t_data	init_data(int argc, char **argv, char **env)
 {
 	t_data	data;
 
-	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
+	if (ft_strncmp(argv[1], "here_doc", 8) == 0 && ft_strlen(argv[1]) == 8)
 		data.heredoc = 1;
 	else
 		data.heredoc = 0;
