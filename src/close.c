@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   close_bonus.c                                      :+:    :+:            */
+/*   close.c                                            :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/01 12:09:06 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/23 12:02:57 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/23 17:54:48 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ void	free_nested_array(char **to_free)
 		free(to_free[i]);
 		i++;
 	}
-	free(to_free);
+	if (to_free)
+		free(to_free);
 }
 
 void	close3(int fd1, int fd2, int fd3)
