@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   init_bonus.c                                       :+:    :+:            */
+/*   init.c                                             :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/24 21:12:39 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/23 12:14:41 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/23 15:20:13 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ t_data	init_data(int argc, char **argv, char **env)
 {
 	t_data	data;
 
-	if (ft_strncmp(argv[1], "here_doc", 8) == 0 && ft_strlen(argv[1]) == 8)
+	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
 		data.heredoc = 1;
 	else
 		data.heredoc = 0;
