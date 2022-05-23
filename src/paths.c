@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/20 21:03:09 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/23 17:51:08 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/23 17:52:34 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*command_in_paths(char *argument, char **paths)
 	if (!paths)
 		write_exit_argument(argument, ": No such file or directory\n", 127);
 	if (!argument)
-		write_exit_argument(argument, ": command not found\n", 127);
+		write_exit(": command not found\n", 127);
 	while (paths && paths[i])
 	{
 		command = make_path(paths[i]);
